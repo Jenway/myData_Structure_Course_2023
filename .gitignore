@@ -1,0 +1,7 @@
+# vscode settings
+.vscode/
+# clang-format config
+.clang-format
+# executables
+*.exe
+```
