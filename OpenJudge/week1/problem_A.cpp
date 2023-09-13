@@ -2,26 +2,73 @@
 
 using namespace std;
 
-bool tag[100] = {};
-int subArray[100] = {};
+class Solution {
+private:
+    int n;
+    int* a;
+    bool* tag;
+    int* subArray;
+    void cal_value(int& value);
+    void cal_subset_helper(int key, int& value);
+    int cal_subset();
 
-void cal_value(int* a, int n, int& value);
-int cal_subset(int* a, int n);
+public:
+    void input()
+    {
+        for (int i = 0; i < this->n; i++) {
+            cin >> this->a[i];
+        }
+    }
+    void output()
+    {
+        cout << this->cal_subset() << endl;
+    }
+    Solution(int size)
+        : n(size)
+    {
+        a = new int[n];
+        tag = new bool[n];
+        subArray = new int[n];
+    }
+    Solution() = delete;
+    ~Solution()
+    {
+        delete[] a;
+        delete[] tag;
+        delete[] subArray;
+    }
+};
 
 int main(void)
 {
     int n;
     cin >> n;
-    int* a = new int[n];
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
-    cout << cal_subset(a, n) << endl;
-    delete[] a;
+    Solution solution(n);
+    solution.input();
+    solution.output();
     return 0;
 }
 
-void cal_value(int* a, int n, int& value)
+int Solution::cal_subset()
+{
+    int value = 0;
+    cal_subset_helper(0, value);
+    return value;
+}
+
+void Solution::cal_subset_helper(int key, int& value)
+{
+    if (key == n) {
+        cal_value(value);
+    } else {
+        tag[key] = true;
+        cal_subset_helper(key + 1, value);
+        tag[key] = false;
+        cal_subset_helper(key + 1, value);
+    }
+}
+
+void Solution::cal_value(int& value)
 {
     int sum = 0, num = 0;
     for (int i = 0; i < n; i++) {
@@ -34,23 +81,4 @@ void cal_value(int* a, int n, int& value)
         sum += subArray[j] * (j + 1);
     }
     value ^= sum;
-}
-
-void cal_subset_helper(int* a, int n, int key, int& value)
-{
-    if (key == n) {
-        cal_value(a, n, value);
-    } else {
-        tag[key] = true;
-        cal_subset_helper(a, n, key + 1, value);
-        tag[key] = false;
-        cal_subset_helper(a, n, key + 1, value);
-    }
-}
-
-int cal_subset(int* a, int n)
-{
-    int value = 0;
-    cal_subset_helper(a, n, 0, value);
-    return value;
 }

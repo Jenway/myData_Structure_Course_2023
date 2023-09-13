@@ -1,5 +1,7 @@
 # vscode settings
 .vscode/
+# vscode plugins
+.cph
 # clang-format config
 .clang-format
 # executables

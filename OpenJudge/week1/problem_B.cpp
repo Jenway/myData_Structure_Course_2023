@@ -2,25 +2,36 @@
 
 using namespace std;
 
-void cal_value(int* a, int n, int& value);
-int cal_permutation(int* a, int n);
+class Solution {
+private:
+    int n;
+    int* a;
+    void cal_value(int& value);
+    void cal_permutation_helper(int key, int& value);
+
+public:
+    int cal_permutation();
+    void input();
+    void output();
+    Solution(int size);
+    Solution() = delete;
+    ~Solution() = default;
+};
 
 int main(void)
 {
+
     int n;
     cin >> n;
-    int* a = new int[n];
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
 
-    cout << cal_permutation(a, n) << endl;
-
-    delete[] a;
+    Solution solution(n);
+    solution.input();
+    solution.output();
+    
     return 0;
 }
 
-void cal_value(int* a, int n, int& value)
+void Solution::cal_value(int& value)
 {
     int sum = 0;
     for (int i = 0; i < n; i++) {
@@ -29,20 +40,40 @@ void cal_value(int* a, int n, int& value)
     value |= sum;
 }
 
-void cal_permutation_helper(int* a, int n, int key, int& value)
+void Solution::cal_permutation_helper(int key, int& value)
 {
     if (key == n) {
-        cal_value(a, n, value);
+        cal_value(value);
     } else {
         for (int i = key; i < n; i++) {
             swap(a[key], a[i]);
-            cal_permutation_helper(a, n, key + 1, value);
+            cal_permutation_helper(key + 1, value);
             swap(a[key], a[i]);
         }
     }
 }
-int cal_permutation(int* a, int n){
+
+int Solution::cal_permutation()
+{
     int value = 0;
-    cal_permutation_helper(a, n, 0, value);
+    cal_permutation_helper(0, value);
     return value;
+}
+
+Solution::Solution(int size)
+    : n(size)
+{
+    a = new int[n];
+}
+
+void Solution::input()
+{
+    for (int i = 0; i < this->n; i++) {
+        cin >> this->a[i];
+    }
+}
+
+void Solution::output()
+{
+    cout << this->cal_permutation() << endl;
 }
