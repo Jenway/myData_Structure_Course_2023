@@ -13,30 +13,11 @@ private:
     int cal_subset();
 
 public:
-    void input()
-    {
-        for (int i = 0; i < this->n; i++) {
-            cin >> this->a[i];
-        }
-    }
-    void output()
-    {
-        cout << this->cal_subset() << endl;
-    }
-    Solution(int size)
-        : n(size)
-    {
-        a = new int[n];
-        tag = new bool[n];
-        subArray = new int[n];
-    }
+    void input();
+    void output();
+    Solution(int size);
     Solution() = delete;
-    ~Solution()
-    {
-        delete[] a;
-        delete[] tag;
-        delete[] subArray;
-    }
+    ~Solution();
 };
 
 int main(void)
@@ -59,8 +40,13 @@ int Solution::cal_subset()
 void Solution::cal_subset_helper(int key, int& value)
 {
     if (key == n) {
+        // 此时，已经考虑了每一个元素的选取情况
+        // 计算当前子集的值
         cal_value(value);
     } else {
+        /*
+         * 这里分两种情况，一种是a[key]不在子集中，一种是a[key]在子集中
+         */
         tag[key] = true;
         cal_subset_helper(key + 1, value);
         tag[key] = false;
@@ -71,14 +57,41 @@ void Solution::cal_subset_helper(int key, int& value)
 void Solution::cal_value(int& value)
 {
     int sum = 0, num = 0;
+    // 为子集赋值
     for (int i = 0; i < n; i++) {
         if (tag[i]) {
             subArray[num] = a[i];
             num++;
         }
     }
+    // 计算子集的值
     for (int j = 0; j < num; j++) {
         sum += subArray[j] * (j + 1);
     }
+    // 加和（异或）
     value ^= sum;
+}
+
+void Solution::input()
+{
+    for (int i = 0; i < this->n; i++) {
+        cin >> this->a[i];
+    }
+}
+void Solution::output()
+{
+    cout << this->cal_subset() << endl;
+}
+Solution::Solution(int size)
+    : n(size)
+{
+    a = new int[n];
+    tag = new bool[n];
+    subArray = new int[n];
+}
+Solution::~Solution()
+{
+    delete[] a;
+    delete[] tag;
+    delete[] subArray;
 }
