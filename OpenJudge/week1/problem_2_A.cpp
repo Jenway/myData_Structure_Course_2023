@@ -9,9 +9,8 @@ class SortClass {
 private:
     T* data;
     int size = 1000;
-    void swap(T& a, T& b);
     void compute_rank(int* rank);
-    int select_minimum(int start);
+    int select_minimum(int start, bool& flag);
     void bubble(int i, bool& flag);
     void insertion(int i);
 
@@ -38,14 +37,11 @@ int main(void)
     SortClass<int> sort_class(n);
     sort_class.input();
 
-    sort_class.rank_sort();
-    sort_class.output();
-    // sort_class.selection_sort();
-    // sort_class.output();
+    // sort_class.rank_sort();
+    sort_class.selection_sort();
     // sort_class.bubble_sort();
-    // sort_class.output();
     // sort_class.insertion_sort();
-    // sort_class.output();
+    sort_class.output();
     return 0;
 }
 
@@ -87,18 +83,25 @@ template <typename T>
 void SortClass<T>::selection_sort()
 {
     for (int i = 0; i < this->size; i++) {
-        int min = select_minimum(i);
+        bool isSorted = true;
+        int min = select_minimum(i, isSorted);
         if (min != i) {
-            this->swap(this->data[min], this->data[i]);
+            swap(this->data[min], this->data[i]);
+        }
+        if (isSorted) {
+            break;
         }
     }
 }
 
 template <typename T>
-int SortClass<T>::select_minimum(int start)
+int SortClass<T>::select_minimum(int start, bool& isSorted)
 {
     int min = start;
-    for (int j = this->size - 1; j > start; j--) {
+    for (int j = start + 1; j < this->size; j++) {
+        if (this->data[j] > this->data[j + 1]) {
+            isSorted = false;
+        }
         if (this->data[min] > this->data[j]) {
             min = j;
         }
@@ -123,7 +126,7 @@ void SortClass<T>::bubble(int i, bool& flag)
 {
     for (int j = i + 1; j < size; j++) {
         if (this->data[i] > this->data[j]) {
-            this->swap(this->data[i], this->data[j]);
+            swap(this->data[i], this->data[j]);
             flag = true;
         }
     }
@@ -146,14 +149,6 @@ void SortClass<T>::insertion(int i)
         this->data[j + 1] = this->data[j];
     }
     this->data[j + 1] = temp;
-}
-
-template <typename T>
-void SortClass<T>::swap(T& a, T& b)
-{
-    T temp = a;
-    a = b;
-    b = temp;
 }
 
 template <typename T>
