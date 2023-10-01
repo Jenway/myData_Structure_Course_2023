@@ -49,10 +49,10 @@ class Linearlist {
 public:
     Linearlist(int n = 10); // 构造函数
     ~Linearlist(); // 析构函数
-    void insert(const char* name, int class_num, long long phone_num, int home_num); // 插入联系人
+    void insert(const char* name, int& class_num, long long& phone_num, int& home_num); // 插入联系人
     void del(const char* name); // 删除联系人
-    void edit1(const char* name, long long phone_num); // 编辑联系人电话
-    void edit2(const char* name, int newnum, int index); // 编辑联系人班级和宿舍号
+    void edit1(const char* name, long long& phone_num); // 编辑联系人电话
+    void edit2(const char* name, int& newnum, int& index); // 编辑联系人班级和宿舍号
     bool search(const char* name); // 查找联系人
     int print(int class_num); // 打印联系人
 
@@ -71,7 +71,7 @@ Linearlist::Linearlist(int n)
 
 Linearlist::~Linearlist() { delete[] element; }
 
-void Linearlist::insert(const char* name, int class_num, long long phone_num, int home_num)
+void Linearlist::insert(const char* name, int& class_num, long long& phone_num, int& home_num)
 { // 插入联系人
     if (listsize == length) {
         changelength(element, length, length * 2); // 如果数组已满，扩容
@@ -99,7 +99,7 @@ void Linearlist::del(const char* name)
     }
 }
 
-void Linearlist::edit1(const char* name, long long newphone_num)
+void Linearlist::edit1(const char* name, long long& newphone_num)
 { // 编辑联系人电话
     int i = 0;
     while (i < listsize && strcmp(element[i].name, name) != 0) // 查找联系人
@@ -110,7 +110,7 @@ void Linearlist::edit1(const char* name, long long newphone_num)
         element[i].phone_num = newphone_num;
 }
 
-void Linearlist::edit2(const char* name, int newnum, int index)
+void Linearlist::edit2(const char* name, int& newnum, int& index)
 { // 编辑联系人班级和宿舍号
     int i = 0;
     while (i < listsize && strcmp(element[i].name, name) != 0) // 查找联系人
@@ -145,12 +145,12 @@ int Linearlist::print(int class_num)
 
 int main()
 {
-    int n, class_num, phone_num, home_num, newnum, index;
-    char name[20];
+    int n;
     cin >> n;
     Linearlist list;
     for (int i = 0; i < n; i++) {
-        long long class_num, phone_num, home_num, newnum, index;
+        int class_num, home_num, newnum, index;
+        long long phone_num;
         char* name = new char[20];
         cin >> index;
         switch (index) {
