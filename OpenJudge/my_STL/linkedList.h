@@ -1,7 +1,5 @@
 #include <iostream>
 
-using namespace std;
-
 template <typename T>
 class LinkedList {
 private:
@@ -66,11 +64,11 @@ public:
     void LOG_output()
     {
         for (auto i : *this) {
-            cout << i << " ";
+            std::cout << i << " ";
         }
-        cout << endl;
+        std::cout << std::endl;
     }
-    void LOG_output(stringstream& ss)
+    void LOG_output(std::stringstream& ss)
     {
         for (auto i : *this) {
             ss << i << " ";

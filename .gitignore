@@ -4,6 +4,24 @@
 .cph
 # clang-format config
 .clang-format
+
 # executables
+*.input
+*.htm
+*.output
+*.out
+**/Debug/
 *.exe
+
+# progs/code
+progs/codes/codes.suo
+progs/codes/codes/ReadMe.txt
+progs/codes/codes/codes.ncb
+progs/codes/codes/codes.sln
+progs/codes/codes/codes.suo
+progs/codes/codes/codes.vcproj
+progs/codes/linkedBinaryTree.dsp
+progs/codes/linkedBinaryTree.dsw
+progs/codes/linkedBinaryTree.plg
+progs/codes/quadraticRoots.data
 ```

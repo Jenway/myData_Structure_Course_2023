@@ -64,6 +64,13 @@ public:
         array = new T[capacity];
         size = 0;
     }
+    arrayList(int capacity, const T& defaultValue)
+        : arrayList(capacity)
+    {
+        for (int i = 0; i < capacity; i++) {
+            array[i] = defaultValue;
+        }
+    }
     ~arrayList()
     {
         delete[] array;
