@@ -1,22 +1,23 @@
 #include <iostream>
-#include <string>
+
+using std::cin, std::cout, std::endl;
 
 template <typename K>
 class Hash;
 
-template <>
-class Hash<std::string> {
-public:
-    size_t operator()(const std::string theKey) const
-    {
-        unsigned long hashValue = 0;
-        int length = (int)theKey.length();
-        for (int i = 0; i < length; i++)
-            hashValue = 5 * hashValue + theKey.at(i);
+// template <>
+// class Hash<string> {
+// public:
+//     size_t operator()(const string theKey) const
+//     {
+//         unsigned long hashValue = 0;
+//         int length = (int)theKey.length();
+//         for (int i = 0; i < length; i++)
+//             hashValue = 5 * hashValue + theKey.at(i);
 
-        return size_t(hashValue);
-    }
-};
+//         return size_t(hashValue);
+//     }
+// };
 
 template <>
 class Hash<int> {
@@ -110,8 +111,10 @@ template <typename K, typename E>
 pair<const K, E>* sortedChain<K, E>::find(const K& theKey) const
 {
     if (pair<const K, E>* p = search(theKey)) {
+        cout << this->dSize << endl;
         return p;
     } else {
+        cout << "Not Found" << endl;
         return nullptr;
     }
 }
@@ -128,6 +131,7 @@ void sortedChain<K, E>::insert(const pair<const K, E>& thePair)
     }
 
     if (curr != nullptr && curr->element.first == thePair.first) {
+        cout << "Existed" << endl;
         return;
     } else {
 
@@ -159,7 +163,9 @@ void sortedChain<K, E>::erase(const K& theKey)
         }
         delete curr;
         dSize--;
+        cout << this->dSize << endl;
     } else {
+        cout << "Delete Failed" << endl;
     }
 }
 
