@@ -22,14 +22,12 @@ private:
 
 public:
     Solution(int D, int m)
-        : hashTable(D)
+        : hashTable(hashTable(D))
         , m(m)
     {
     }
     void solve()
     {
-        
-
         for (int i = 1, opt, d; i <= m; i++) {
             std::cin >> opt >> d;
             Pair p{ d, 0 };
