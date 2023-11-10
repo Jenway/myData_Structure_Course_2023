@@ -9,20 +9,27 @@
  */
 
 #include "linkedBinaryTree.h"
+#include "unordered_map.h"
 #include <iostream>
 
-using std::cin, std::cout, std::endl;
+using namespace std;
 using BinaryTree = linkedBinaryTree<int>;
+using Unordered_map = my_unordered_map<int, int>;
 class Solution {
 private:
     int n;
     int* preOrder;
     int* inOrder;
+    Unordered_map* inOrderIndex;
     BinaryTree* tree;
 
 public:
-    Solution()
-        : tree { new BinaryTree() }
+    Solution(int num)
+        : n { num }
+        , preOrder { new int[n] }
+        , inOrder { new int[n] }
+        , inOrderIndex { new Unordered_map(n) }
+        , tree { new BinaryTree() }
     {
     }
     ~Solution()
@@ -34,24 +41,27 @@ public:
 
 void Solution::runTest()
 {
+    int temp;
+    for (int i = 0; i < n; i++) {
+        cin >> temp;
+        preOrder[i] = temp;
+    }
+    for (int i = 0; i < n; i++) {
+        cin >> temp;
+        inOrder[i] = temp;
+        inOrderIndex->insert({ temp, i });
+    }
 
-    preOrder = new int[n];
-    inOrder = new int[n];
-    cin >> n;
-    for (int i = 0; i < n; i++) {
-        cin >> preOrder[i];
-    }
-    for (int i = 0; i < n; i++) {
-        cin >> inOrder[i];
-    }
-    this->tree->buildTree(preOrder, inOrder, n);
+    this->tree->buildTree(preOrder, inOrder, n, *inOrderIndex);
     this->tree->postOrder([](BinaryTree::Node* node) { cout << node->data << " "; });
     cout << endl;
 }
 
 int main(void)
 {
-    Solution* sol = new Solution();
+    int n;
+    cin >> n;
+    Solution* sol = new Solution(n);
     sol->runTest();
     delete sol;
     return 0;

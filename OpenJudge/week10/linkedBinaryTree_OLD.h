@@ -153,51 +153,20 @@ void linkedBinaryTree<T>::preOrder(Node* node, void (*visit)(Node* node))
 template <typename T>
 void linkedBinaryTree<T>::inOrder(Node* node, void (*visit)(Node* node))
 {
-    ArrayDeque<Node*> stack;
-    Node* current = node;
-
-    while (current != nullptr || !stack.empty()) {
-        while (current != nullptr) {
-            stack.push_back(current);
-            current = current->left;
-        }
-
-        current = stack.back();
-        stack.pop_back();
-
-        visit(current);
-
-        current = current->right;
+    if (node != nullptr) {
+        inOrder(node->left, visit);
+        visit(node);
+        inOrder(node->right, visit);
     }
 }
 
 template <typename T>
 void linkedBinaryTree<T>::postOrder(Node* node, void (*visit)(Node* node))
 {
-    if (node == nullptr) {
-        return;
-    }
-
-    ArrayDeque<Node*> stack1, stack2;
-    stack1.push_back(node);
-
-    while (!stack1.empty()) {
-        Node* temp = stack1.back();
-        stack1.pop_back();
-        stack2.push_back(temp);
-
-        if (temp->left) {
-            stack1.push_back(temp->left);
-        }
-        if (temp->right) {
-            stack1.push_back(temp->right);
-        }
-    }
-
-    while (!stack2.empty()) {
-        Node* temp = stack2.back();
-        stack2.pop_back();
-        visit(temp);
+    if (node != nullptr) {
+        postOrder(node->left, visit);
+        postOrder(node->right, visit);
+        visit(node);
     }
 }
 template <typename T>

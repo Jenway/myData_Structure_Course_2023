@@ -1,3 +1,5 @@
+#if !defined(_UNORDERED_MAP_H_)
+#define _UNORDERED_MAP_H_
 template <typename K, typename E>
 struct myPair {
     K first;
@@ -116,3 +118,5 @@ public:
         return table[index]->second;
     }
 };
+
+#endif // _UNORDERED_MAP_H_

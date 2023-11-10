@@ -29,13 +29,7 @@ public:
     {
         clear();
     }
-
-    void buildTree(const int* preOrder, const int* inOrder, int n);
-
-    void clear()
-    {
-        postOrder(root, [](Node* node) { delete node; });
-    }
+    int size() const { return _size; }
 
     void input();
 
@@ -44,10 +38,10 @@ public:
     void postOrder(void (*visit)(Node* node)) { postOrder(root, visit); }
     void levelOrder(void (*visit)(Node* node)) { levelOrder(root, visit); }
 
-    int size() const { return _size; }
-
     void count_all();
     void height_all();
+
+    void buildTree(const int* preOrder, const int* inOrder, int n, unordered_map<int, int>& inOrderIndex);
 
 private:
     Node* root;
@@ -58,42 +52,13 @@ private:
     void postOrder(Node* node, void (*visit)(Node* node));
     void levelOrder(Node* node, void (*visit)(Node* node));
 
-    int count(Node* node, unordered_map<int, int>& counts)
+    int count(Node* node, unordered_map<int, int>& counts);
+    int height(Node* node, unordered_map<int, int>& heights);
+    void clear()
     {
-        if (node == nullptr) {
-            return 0;
-        }
-
-        if (counts.find(node->data) != counts.end()) {
-            return counts[node->data];
-        }
-        int leftCount = count(node->left, counts);
-        int rightCount = count(node->right, counts);
-
-        int totalCount = leftCount + rightCount + 1;
-        counts[node->data] = totalCount;
-
-        return totalCount;
+        postOrder(root, [](Node* node) { delete node; });
     }
-
-    int height(Node* node, unordered_map<int, int>& heights)
-    {
-        if (node == nullptr) {
-            return 0;
-        }
-
-        if (heights.find(node->data) != heights.end()) {
-            return heights[node->data];
-        }
-
-        int leftHeight = height(node->left, heights);
-        int rightHeight = height(node->right, heights);
-        int maxHeight = std::max(leftHeight, rightHeight) + 1;
-
-        heights[node->data] = maxHeight;
-
-        return maxHeight;
-    }
+    Node* buildHelper(const int* preOrder, int preStart, int preEnd, const int* inOrder, int inStart, int inEnd, unordered_map<int, int>& inOrderIndex);
 };
 
 template <typename T>
@@ -231,6 +196,25 @@ void linkedBinaryTree<T>::count_all()
 }
 
 template <typename T>
+int linkedBinaryTree<T>::count(Node* node, unordered_map<int, int>& counts)
+{
+    if (node == nullptr) {
+        return 0;
+    }
+
+    if (counts.find(node->data) != counts.end()) {
+        return counts[node->data];
+    }
+    int leftCount = count(node->left, counts);
+    int rightCount = count(node->right, counts);
+
+    int totalCount = leftCount + rightCount + 1;
+    counts[node->data] = totalCount;
+
+    return totalCount;
+}
+
+template <typename T>
 void linkedBinaryTree<T>::height_all()
 {
     unordered_map<int, int> heights { unordered_map<int, int>(size()) };
@@ -242,27 +226,46 @@ void linkedBinaryTree<T>::height_all()
 }
 
 template <typename T>
-void linkedBinaryTree<T>::buildTree(const int* preOrder, const int* inOrder, int n)
+int linkedBinaryTree<T>::height(Node* node, unordered_map<int, int>& heights)
 {
-    Queue q;
-    Node* node;
-    int i = 0;
-    this->root = new Node { preOrder[i++], nullptr, nullptr };
-    q.push(root);
-    while (i < n) {
-        node = q.front();
-        q.pop();
-        if (node->data != inOrder[i]) {
-            node->left = new Node { preOrder[i++], nullptr, nullptr };
-            q.push(node->left);
-        } else {
-            i++;
-        }
-        if (i < n && node->data != inOrder[i]) {
-            node->right = new Node { preOrder[i++], nullptr, nullptr };
-            q.push(node->right);
-        } else {
-            i++;
-        }
+    if (node == nullptr) {
+        return 0;
+    }
+
+    if (heights.find(node->data) != heights.end()) {
+        return heights[node->data];
+    }
+
+    int leftHeight = height(node->left, heights);
+    int rightHeight = height(node->right, heights);
+    int maxHeight = std::max(leftHeight, rightHeight) + 1;
+
+    heights[node->data] = maxHeight;
+
+    return maxHeight;
+}
+
+template <typename T>
+void linkedBinaryTree<T>::buildTree(const int* preOrder, const int* inOrder, int n, unordered_map<int, int>& inOrderIndex)
+{
+    this->root = buildHelper(preOrder, 0, n - 1, inOrder, 0, n - 1, inOrderIndex);
+}
+template <typename T>
+typename linkedBinaryTree<T>::Node* linkedBinaryTree<T>::buildHelper(const int* preOrder, int preStart, int preEnd, const int* inOrder, int inStart, int inEnd, unordered_map<int, int>& inOrderIndex)
+{
+    if (preStart > preEnd || inStart > inEnd) {
+        return nullptr;
+    }
+
+    Node* root = new Node { preOrder[preStart], nullptr, nullptr };
+
+    if (int index_in_inOrder = inOrderIndex[preOrder[preStart]]; index_in_inOrder == -1) {
+        throw std::runtime_error("Invalid input");
+    } else {
+        int leftTreeSize = index_in_inOrder - inStart;
+        root->left = buildHelper(preOrder, preStart + 1, preStart + leftTreeSize, inOrder, inStart, index_in_inOrder - 1, inOrderIndex);
+        root->right = buildHelper(preOrder, preStart + leftTreeSize + 1, preEnd, inOrder, index_in_inOrder + 1, inEnd, inOrderIndex);
+
+        return root;
     }
 }
