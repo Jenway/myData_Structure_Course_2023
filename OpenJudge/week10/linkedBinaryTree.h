@@ -1,10 +1,16 @@
 #include "arrayQueue.h"
-#include "arrayStack.h"
+// #include "arrayStack.h"
+#include "linkedStack.h"
 #include "unordered_map.h"
 
 #include <iostream>
 
 using std::cin;
+template <typename T>
+using my_Queue = ArrayQueue<T>;
+
+template <typename T>
+using my_Stack = LinkedStack<T>;
 
 template <typename K, typename E>
 using unordered_map = my_unordered_map<K, E>;
@@ -60,12 +66,6 @@ private:
     }
     Node* buildHelper(const int* preOrder, int preStart, int preEnd, const int* inOrder, int inStart, int inEnd, unordered_map<int, int>& inOrderIndex);
 };
-
-template <typename T>
-using my_Queue = ArrayQueue<T>;
-
-template <typename T>
-using my_Stack = ArrayStack<T>;
 
 using Queue = my_Queue<linkedBinaryTree<int>::Node*>;
 using Stack = my_Stack<linkedBinaryTree<int>::Node*>;

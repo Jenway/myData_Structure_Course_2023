@@ -1,10 +1,11 @@
-#if !defined(ARRAYDEQUE_H)
+#ifndef ARRAYDEQUE_H
 #define ARRAYDEQUE_H
 
-// Double-ended queue implemented with a circular array
-#include <iostream>
+#include <cstdlib> // size_t
+#include <stdexcept> // std::out_of_range
 #include <utility> // std::move
 
+// Double-ended queue implemented with a circular array
 template <typename T>
 class ArrayDeque {
 private:
@@ -28,78 +29,146 @@ public:
         , data { new T[capacity] {} }
     {
     }
-    ~ArrayDeque()
-    {
-        delete[] data;
-        clear();
-    }
-    void push_front(T& e)
-    {
-        this->_front = prevIndex(this->_front);
-        this->data[this->_front] = e;
-        _size++;
-        resize();
-    }
-    void push_back(T& e)
-    {
-        this->data[this->_rear] = e;
-        this->_rear = nextIndex(this->_rear);
-        _size++;
-        resize();
-    }
-    void push_front(T&& e)
-    {
-        this->push_front(std::forward<T>(e));
-    }
+    ~ArrayDeque();
 
-    void push_back(T&& e)
-    {
-        this->push_back(std::forward<T>(e));
-    }
+    ArrayDeque(const ArrayDeque& other) = delete;
+    ArrayDeque& operator=(const ArrayDeque& other) = delete;
+    ArrayDeque& operator=(ArrayDeque&& other);
+    ArrayDeque(ArrayDeque&& other);
 
-    void pop_front()
-    {
-        this->_front = nextIndex(this->_front);
-        _size--;
-        resize();
-    }
-    void pop_back()
-    {
-        this->_rear = prevIndex(this->_rear);
-        _size--;
-        resize();
-    }
+    void push_front(T& e);
+    void push_back(T& e);
+    void push_front(T&& e);
+    void push_back(T&& e);
 
-    T& front()
-    {
-        if (_size == 0) {
-            throw std::out_of_range("Deque is empty");
-        }
+    void pop_front();
+    void pop_back();
 
-        int firstIndex = this->_front;
-        return this->data[firstIndex];
-    }
-    T& back()
-    {
-        if (_size == 0) {
-            throw std::out_of_range("Deque is empty");
-        }
-
-        int lastIndex = prevIndex(this->_rear);
-        return this->data[lastIndex];
-    }
-    int size() const { return this->_rear - this->_front; }
     bool empty() const { return _size == 0; }
-    bool isFull() const { return size() == capacity; }
-    void clear() { this->_front = this->_rear = 0; }
+    size_t size() const { return _size; }
+
+    T& front();
+    T& back();
+
+    void clear();
 };
+
+template <typename T>
+ArrayDeque<T>::~ArrayDeque()
+{
+    delete[] data;
+    clear();
+}
+
+template <typename T>
+ArrayDeque<T>& ArrayDeque<T>::operator=(ArrayDeque&& other)
+{
+    capacity = other.capacity;
+    _front = other._front;
+    _rear = other._rear;
+    _size = other._size;
+    data = other.data;
+    other.capacity = 0;
+    other._front = 0;
+    other._rear = 0;
+    other._size = 0;
+    other.data = nullptr;
+    return *this;
+}
+
+template <typename T>
+ArrayDeque<T>::ArrayDeque(ArrayDeque&& other)
+{
+    *this = std::move(other);
+}
+
+template <typename T>
+void ArrayDeque<T>::push_front(T& e)
+{
+
+    this->_front = prevIndex(this->_front);
+    this->data[this->_front] = e;
+    _size++;
+    resize();
+}
+
+template <typename T>
+void ArrayDeque<T>::push_back(T& e)
+{
+    this->data[this->_rear] = e;
+    this->_rear = nextIndex(this->_rear);
+    _size++;
+    resize();
+}
+
+template <typename T>
+void ArrayDeque<T>::push_front(T&& e)
+{
+    this->push_front(std::forward<T>(e));
+}
+
+template <typename T>
+void ArrayDeque<T>::push_back(T&& e)
+{
+    this->push_back(std::forward<T>(e));
+}
+
+template <typename T>
+void ArrayDeque<T>::pop_front()
+{
+    if (empty()) {
+        throw std::out_of_range("deque is empty");
+    }
+    this->_front = nextIndex(this->_front);
+    _size--;
+    resize();
+}
+
+template <typename T>
+void ArrayDeque<T>::pop_back()
+{
+    if (empty()) {
+        throw std::out_of_range("deque is empty");
+    }
+    this->_rear = prevIndex(this->_rear);
+    _size--;
+    resize();
+}
+
+template <typename T>
+T& ArrayDeque<T>::front()
+{
+    if (empty()) {
+        throw std::out_of_range("deque is empty");
+    } else {
+        return this->data[this->_front];
+    }
+}
+
+template <typename T>
+T& ArrayDeque<T>::back()
+{
+    if (empty()) {
+        throw std::out_of_range("deque is empty");
+    } else {
+        return this->data[prevIndex(this->_rear)];
+    }
+}
+
+template <typename T>
+void ArrayDeque<T>::clear()
+{
+    _front = 0;
+    _rear = 0;
+    _size = 0;
+}
 
 template <typename T>
 void ArrayDeque<T>::resize()
 {
-    if (size() == capacity) {
+    if (_size == capacity) {
         resize(capacity * 2);
-    } else if (size() < capacity / 4 && capacity / 2 >= 10) {
+    } else if (_size < capacity / 4) {
         resize(capacity / 2);
     }
 }
@@ -107,15 +176,17 @@ void ArrayDeque<T>::resize()
 template <typename T>
 void ArrayDeque<T>::resize(int newCapacity)
 {
-    T* newData = new T[newCapacity];
-    for (int i = 0; i < size(); i++) {
-        newData[i] = data[(i + _front) % capacity];
+    T* newData = new T[newCapacity] {};
+    int j = 0;
+    for (int i = _front; i != _rear; i = nextIndex(i)) {
+        newData[j++] = data[i];
     }
+    newData[j] = data[_rear];
     delete[] data;
     data = newData;
-    _front = 0;
-    _rear = size();
     capacity = newCapacity;
+    _front = 0;
+    _rear = j;
 }
 
 #endif // ARRAYDEQUE_H
