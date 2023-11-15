@@ -86,7 +86,7 @@ void linkedDeque<T>::push_front(T& item)
 template <typename T>
 void linkedDeque<T>::push_front(T&& item)
 {
-    this->push_front(std::forward<T>(item));
+    this->push_front(item);
 }
 
 template <typename T>
@@ -107,7 +107,7 @@ void linkedDeque<T>::push_back(T& item)
 template <typename T>
 void linkedDeque<T>::push_back(T&& item)
 {
-    this->push_back(std::forward<T>(item));
+    this->push_back(item);
 }
 
 template <typename T>

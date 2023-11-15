@@ -78,7 +78,7 @@ void linkedQueue<T>::push(T& item)
 template <typename T>
 void linkedQueue<T>::push(T&& item)
 {
-    this->push(std::forward<T&>(item));
+    this->push(item);
 }
 
 template <typename T>

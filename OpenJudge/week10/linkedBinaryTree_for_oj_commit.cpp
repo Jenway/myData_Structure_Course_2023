@@ -312,7 +312,7 @@ void linkedBinaryTree<T>::input()
      * 之后 n 行每行两个数字，第 i 行的两个数字 a、b 表示内容为 i 的节点的左孩子节点的内容为 a，右孩子节点的内容为 b，
      * -1 表示该位置没有节点。保证数据有效，根节点内容为 1
      */
-    Queue q;
+    // Queue q;
     int n;
     cin >> n;
     this->_size = n;

@@ -104,13 +104,13 @@ void ArrayDeque<T>::push_back(T& e)
 template <typename T>
 void ArrayDeque<T>::push_front(T&& e)
 {
-    this->push_front(std::forward<T>(e));
+    this->push_front(e);
 }
 
 template <typename T>
 void ArrayDeque<T>::push_back(T&& e)
 {
-    this->push_back(std::forward<T>(e));
+    this->push_back(e);
 }
 
 template <typename T>
