@@ -1,19 +1,9 @@
 #include "priorityQueue.h"
-#include <algorithm>
-#include <iostream>
-#include <queue>
 
-using std::cin, std::cout, std::endl;
+#include <iostream>
 
 using min_heap = PriorityQueue<int>;
-// using min_heap = std::priority_queue<int, std::vector<int>, std::greater<int>>;
-// heapSort from algorithm
-auto heapSort = [](int* a, int n) {
-    PriorityQueue<int>::make_heap(a, a + n, PriorityQueue<int>::less);
-    PriorityQueue<int>::sort_heap(a, a + n, PriorityQueue<int>::less);
-    // std::make_heap(a, a + n, std::less<int>());
-    // std::sort_heap(a, a + n, std::less<int>());
-};
+using namespace std;
 
 class Solution {
 private:
@@ -27,16 +17,11 @@ public:
     }
     void input()
     {
-        // int* a = new int[n];
         for (int i = 0; i < n; i++) {
-            // cin >> a[i];
             int x;
             cin >> x;
             pq.push(x);
         }
-        // initialize the priority queue from a
-        // pq = min_heap(a, a + n);
-        // delete[] a;
         cout << pq.top() << endl;
     }
     void runTest()
@@ -44,7 +29,6 @@ public:
         int m;
         cin >> m;
         for (int i = 0; i < m; ++i) {
-            // cout << "i: " << i << endl;
             int op;
             cin >> op;
             switch (op) {
@@ -65,7 +49,7 @@ public:
                 for (int j = 0; j < sz; j++) {
                     cin >> b[j];
                 }
-                heapSort(b, sz);
+                heapSort<int, std::greater<int>>(b, sz);
                 for (int j = 0; j < sz; j++) {
                     cout << b[j] << " ";
                 }
