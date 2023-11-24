@@ -977,22 +977,22 @@ public:
     }
     void assignCode()
     {
-        assignCode(root, "");
+        assignCode(root, 0);
     }
 
-    void assignCode(HuffmanNode* n, String code)
+    void assignCode(HuffmanNode* n, int code)
     {
         if (n == nullptr) {
             return;
         }
         if (n->left == nullptr && n->right == nullptr) {
-            codes[n->data - 'a'] = code.size();
+            codes[n->data - 'a'] = code;
         }
         if (n->left) {
-            assignCode(n->left, code + "0");
+            assignCode(n->left, code + 1);
         }
         if (n->right) {
-            assignCode(n->right, code + "1");
+            assignCode(n->right, code + 1);
         }
     }
 

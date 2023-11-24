@@ -3,7 +3,6 @@
 
 // Double-ended queue implemented with a circular array
 #include <iostream>
-#include <utility> // std::move
 
 template <typename T>
 class ArrayDeque {
@@ -41,6 +40,13 @@ public:
         resize();
     }
     void push_back(T& e)
+    {
+        this->data[this->_rear] = e;
+        this->_rear = nextIndex(this->_rear);
+        _size++;
+        resize();
+    }
+    void push_back(const T& e)
     {
         this->data[this->_rear] = e;
         this->_rear = nextIndex(this->_rear);
@@ -88,6 +94,15 @@ public:
         int lastIndex = prevIndex(this->_rear);
         return this->data[lastIndex];
     }
+    T& operator[](int index)
+    {
+        if (index < 0 || index > _size) {
+            std::cout << "index: " << index << std::endl;
+            throw std::out_of_range("Index out of range");
+        }
+
+        return this->data[(this->_front + index) % capacity];
+    }
     int size() const { return this->_rear - this->_front; }
     bool empty() const { return _size == 0; }
     bool isFull() const { return size() == capacity; }
@@ -97,7 +112,7 @@ public:
 template <typename T>
 void ArrayDeque<T>::resize()
 {
-    if (size() == capacity) {
+    if (size() == capacity - 1) {
         resize(capacity * 2);
     } else if (size() < capacity / 4 && capacity / 2 >= 10) {
         resize(capacity / 2);
