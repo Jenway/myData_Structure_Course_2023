@@ -1,16 +1,16 @@
-#include "arrayDeque.h"
+#include "arrayList.h"
 #include <iostream>
 
 template <typename T>
-using vector = ArrayDeque<T>;
+using vector = arrayList<T>;
 
 template <typename T>
-class less {
+class my_less {
 public:
     bool operator()(const T& lhs, const T& rhs) { return lhs < rhs; }
 };
 template <typename T>
-class greater {
+class my_greater {
 public:
     bool operator()(const T& lhs, const T& rhs) { return lhs > rhs; }
 };
@@ -18,13 +18,13 @@ public:
 template <typename T, typename Compare>
 void make_heap(T* a, int n, Compare cmp = Compare());
 
-template <typename T, typename Compare = less<T>> // default is less
+template <typename T, typename Compare = my_less<T>> // default is less
 class PriorityQueue {
 private:
     vector<T> heap;
     Compare cmp;
 
-    void percolateDown();
+    void percolateDown(int hole = 0);
 
 public:
     bool empty() const { return heap.empty(); }
@@ -37,9 +37,8 @@ public:
 };
 
 template <typename T, typename Compare>
-void PriorityQueue<T, Compare>::percolateDown()
+void PriorityQueue<T, Compare>::percolateDown(int hole)
 {
-    int hole = 0;
     T tmp = std::move(heap[hole]);
     for (int child = hole * 2 + 1; child < heap.size(); hole = child, child = hole * 2 + 1) {
         if (child != heap.size() - 1 && cmp(heap[child + 1], heap[child])) {
@@ -81,6 +80,7 @@ void PriorityQueue<T, Compare>::pop()
         percolateDown();
     }
 }
+
 template <typename T, typename Compare>
 void make_heap(T* a, int n, Compare cmp)
 {
@@ -129,7 +129,7 @@ void sort_heap(T* a, int n, Compare cmp = Compare())
     }
 }
 
-template <typename T, typename Compare>
+template <typename T, typename Compare = my_greater<T>>
 void heapSort(T* a, int n, Compare cmp = Compare())
 {
     make_heap(a, n, cmp);
